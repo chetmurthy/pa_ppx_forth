@@ -5,3 +5,4 @@
 camlp5.*
 local-install
 META
+*_ppo*.ml

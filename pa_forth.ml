@@ -6,17 +6,25 @@ open Pa_ppx_base
 open Pa_passthru
 open Ppxutil
 
-let build_forth loc e =
+let conv = function
+    <:expr:< $int:n$ >> -> <:expr< num $int:n$ >>
+  | e -> e
+
+let build_forth loc eopt =
   let rec brec acc = function
     [] -> acc
   | h::t ->
      let f = "|>" in
-     brec <:expr< $lid:f$ $exp:acc$ $exp:h$ >> t in
-  let (f,l) = Expr.unapplist e in
-  brec <:expr< start () >> (f::l)
+     brec <:expr< $lid:f$ $exp:acc$ $exp:conv h$ >> t in
+  match  eopt with
+    None -> brec <:expr< start () >> []
+  | Some e ->
+     let (f,l) = Expr.unapplist e in
+     brec <:expr< start () >> (f::l)
 
 let rewrite_expr arg = function
-  <:expr:< [%forth $exp:e$ ;] >> -> build_forth loc e
+  <:expr:< [%forth $exp:e$ ;] >> -> build_forth loc (Some e)
+| <:expr:< [%forth] >> -> build_forth loc None
 | _ -> assert false
 
 

@@ -23,8 +23,6 @@ CMX := $(ML:.ml=.cmx)
 CMT := $(ML:.ml=.cmt)
 CMTI := $(MLI:.mli=.cmti)
 
-OCAMLCFLAGS := $(OCAMLCFLAGS) -linkall
-
 all: $(TARGET) $(TARGET:.cma=.cmxa) camlp5.pa_ppx_forth camlp5.pa_ppx_forth.opt
 	$(MAKE) DESTDIR=$(WD)/$(TOP)/local-install/ install
 
